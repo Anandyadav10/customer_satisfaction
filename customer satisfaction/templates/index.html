@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Satisfaction Survey</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+            animation: slideIn 0.8s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .form-group:nth-child(2) { animation-delay: 0.1s; }
+        .form-group:nth-child(3) { animation-delay: 0.2s; }
+        .form-group:nth-child(4) { animation-delay: 0.3s; }
+        .form-group:nth-child(5) { animation-delay: 0.4s; }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 1.1em;
+        }
+
+        .rating-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .rating-container:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+        }
+
+        .rating-stars {
+            display: flex;
+            gap: 5px;
+        }
+
+        .star {
+            font-size: 1.5em;
+            color: #ddd;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+
+        .star:hover,
+        .star.active {
+            color: #ffd700;
+            transform: scale(1.1);
+        }
+
+        .star:hover ~ .star {
+            color: #ddd;
+        }
+
+        .rating-text {
+            font-weight: 600;
+            color: #666;
+            min-width: 80px;
+            text-align: right;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.02);
+            }
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            animation: none;
+        }
+
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            animation: slideUp 0.5s ease-out;
+            display: none;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result.success {
+            background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+            color: #2c5282;
+        }
+
+        .result.warning {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%);
+            color: #8b4513;
+        }
+
+        .result.error {
+            background: linear-gradient(135deg, #ff7675 0%, #fd79a8 100%);
+            color: #fff;
+        }
+
+        .result h3 {
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+
+        .result p {
+            margin-bottom: 5px;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: #e0e0e0;
+            border-radius: 2px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 2px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .rating-container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .rating-text {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-plane"></i> Flight Satisfaction Survey</h1>
+            <p>Help us improve your travel experience by rating our services</p>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <form id="satisfactionForm">
+            <div class="form-group">
+                <label><i class="fas fa-tv"></i> Inflight Entertainment</label>
+                <div class="rating-container">
+                    <div class="rating-stars" data-field="entertainment">
+                        <span class="star" data-rating="1">★</span>
+                        <span class="star" data-rating="2">★</span>
+                        <span class="star" data-rating="3">★</span>
+                        <span class="star" data-rating="4">★</span>
+                        <span class="star" data-rating="5">★</span>
+                    </div>
+                    <div class="rating-text" id="entertainment-text">Please rate</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-suitcase"></i> Baggage Handling</label>
+                <div class="rating-container">
+                    <div class="rating-stars" data-field="baggage">
+                        <span class="star" data-rating="1">★</span>
+                        <span class="star" data-rating="2">★</span>
+                        <span class="star" data-rating="3">★</span>
+                        <span class="star" data-rating="4">★</span>
+                        <span class="star" data-rating="5">★</span>
+                    </div>
+                    <div class="rating-text" id="baggage-text">Please rate</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-broom"></i> Cleanliness</label>
+                <div class="rating-container">
+                    <div class="rating-stars" data-field="cleanliness">
+                        <span class="star" data-rating="1">★</span>
+                        <span class="star" data-rating="2">★</span>
+                        <span class="star" data-rating="3">★</span>
+                        <span class="star" data-rating="4">★</span>
+                        <span class="star" data-rating="5">★</span>
+                    </div>
+                    <div class="rating-text" id="cleanliness-text">Please rate</div>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn" id="submitBtn">
+                <i class="fas fa-paper-plane"></i> Get Satisfaction Prediction
+            </button>
+        </form>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Analyzing your feedback...</p>
+        </div>
+
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        class SatisfactionForm {
+            constructor() {
+                this.ratings = {
+                    entertainment: 0,
+                    baggage: 0,
+                    cleanliness: 0
+                };
+                this.init();
+            }
+
+            init() {
+                this.setupStarRatings();
+                this.setupFormSubmission();
+                this.updateProgress();
+            }
+
+            setupStarRatings() {
+                const starContainers = document.querySelectorAll('.rating-stars');
+                
+                starContainers.forEach(container => {
+                    const field = container.dataset.field;
+                    const stars = container.querySelectorAll('.star');
+                    
+                    stars.forEach(star => {
+                        star.addEventListener('click', () => {
+                            const rating = parseInt(star.dataset.rating);
+                            this.setRating(field, rating);
+                            this.updateStarDisplay(container, rating);
+                            this.updateRatingText(field, rating);
+                            this.updateProgress();
+                        });
+
+                        star.addEventListener('mouseenter', () => {
+                            const rating = parseInt(star.dataset.rating);
+                            this.highlightStars(container, rating);
+                        });
+                    });
+
+                    container.addEventListener('mouseleave', () => {
+                        this.updateStarDisplay(container, this.ratings[field]);
+                    });
+                });
+            }
+
+            setRating(field, rating) {
+                this.ratings[field] = rating;
+            }
+
+            updateStarDisplay(container, rating) {
+                const stars = container.querySelectorAll('.star');
+                stars.forEach((star, index) => {
+                    if (index < rating) {
+                        star.classList.add('active');
+                    } else {
+                        star.classList.remove('active');
+                    }
+                });
+            }
+
+            highlightStars(container, rating) {
+                const stars = container.querySelectorAll('.star');
+                stars.forEach((star, index) => {
+                    if (index < rating) {
+                        star.style.color = '#ffd700';
+                    } else {
+                        star.style.color = '#ddd';
+                    }
+                });
+            }
+
+            updateRatingText(field, rating) {
+                const textElement = document.getElementById(`${field}-text`);
+                const texts = {
+                    1: 'Very Poor',
+                    2: 'Poor', 
+                    3: 'Average',
+                    4: 'Good',
+                    5: 'Excellent'
+                };
+                textElement.textContent = texts[rating] || 'Please rate';
+            }
+
+            updateProgress() {
+                const totalRatings = Object.values(this.ratings).filter(r => r > 0).length;
+                const progress = (totalRatings / 3) * 100;
+                document.getElementById('progressFill').style.width = `${progress}%`;
+            }
+
+            setupFormSubmission() {
+                const form = document.getElementById('satisfactionForm');
+                const submitBtn = document.getElementById('submitBtn');
+
+                form.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    
+                    if (!this.validateForm()) {
+                        return;
+                    }
+
+                    submitBtn.disabled = true;
+                    document.getElementById('loading').style.display = 'block';
+                    document.getElementById('result').style.display = 'none';
+
+                    try {
+                        const result = await this.submitPrediction();
+                        this.displayResult(result);
+                    } catch (error) {
+                        this.displayError(error.message);
+                    } finally {
+                        submitBtn.disabled = false;
+                        document.getElementById('loading').style.display = 'none';
+                    }
+                });
+            }
+
+            validateForm() {
+                const allRated = Object.values(this.ratings).every(rating => rating > 0);
+                
+                if (!allRated) {
+                    this.displayError('Please rate all services before submitting.');
+                    return false;
+                }
+
+                return true;
+            }
+
+            async submitPrediction() {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(this.ratings)
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Prediction failed');
+                }
+
+                return await response.json();
+            }
+
+            displayResult(result) {
+                const resultDiv = document.getElementById('result');
+                const predictionClass = result.prediction === 'satisfied' ? 'success' : 
+                                      result.prediction === 'neutral or dissatisfied' ? 'warning' : 'error';
+                
+                resultDiv.className = `result ${predictionClass}`;
+                resultDiv.innerHTML = `
+                    <h3><i class="fas fa-chart-line"></i> Prediction Result</h3>
+                    <p><strong>Customer Satisfaction:</strong> ${result.prediction}</p>
+                    <p><strong>Confidence:</strong> ${(result.confidence * 100).toFixed(1)}%</p>
+                    <p><strong>Average Rating:</strong> ${result.avg_rating}/5</p>
+                    <p><em>${result.message}</em></p>
+                `;
+                resultDiv.style.display = 'block';
+                
+                // Scroll to result
+                resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+
+            displayError(message) {
+                const resultDiv = document.getElementById('result');
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `
+                    <h3><i class="fas fa-exclamation-triangle"></i> Error</h3>
+                    <p>${message}</p>
+                `;
+                resultDiv.style.display = 'block';
+            }
+        }
+
+        // Initialize the form when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new SatisfactionForm();
+        });
+
+        // Add some interactive animations
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add floating animation to icons
+            const icons = document.querySelectorAll('.fa-plane, .fa-tv, .fa-suitcase, .fa-broom');
+            icons.forEach((icon, index) => {
+                icon.style.animation = `float 3s ease-in-out infinite`;
+                icon.style.animationDelay = `${index * 0.5}s`;
+            });
+
+            // Add floating animation
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes float {
+                    0%, 100% { transform: translateY(0px); }
+                    50% { transform: translateY(-10px); }
+                }
+            `;
+            document.head.appendChild(style);
+        });
+    </script>
+</body>
+</html>
